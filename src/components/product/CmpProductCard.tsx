@@ -14,6 +14,8 @@ import {
   NotaDePedido_ReduxAction_Add,
   NotaDePedido_ReduxAction_Remove,
 } from "./Redux";
+import { FrmModalSiNo_ReduxAction_ShowModal } from "../modalForm/Redux";
+import { INotaDePedido } from "../../entities/INotaDePedido";
 
 const CmpProductCard: React.FC<{
   objProduct: IProduct;
@@ -40,13 +42,57 @@ const CmpProductCard: React.FC<{
     getImg();
   }, []);
 
+  const questionModalFormTextInformation = (isAdd: boolean) => {
+    let objFinded = state.arrNotaDePedido.find(
+      (obj) => obj.objProduct.id === props.objProduct.id
+    );
+    return (
+      <React.Fragment>
+        <p>         
+          {isAdd
+            ? "esta segur@ de agregar al carrito el producto:"
+            : "esta segur@ de retirar del carrito el producto"}
+        </p>
+        <p className="global-font-size-h3 global-color-blue my-4">
+          {props.objProduct.name}
+        </p>
+
+        {objFinded && (
+          <p className="text-muted global-font-size-9">
+            Productos del mismo tipo ingresados en el carrito:{" "}
+            {objFinded.cantidad} <FontAwesomeIcon icon={faShoppingCart} />
+          </p>
+        )}
+      </React.Fragment>
+    );
+  };
+
   const bnAgregarOnClick = () => {
-    dispatch(NotaDePedido_ReduxAction_Add(props.objProduct));
+    dispatch(
+      FrmModalSiNo_ReduxAction_ShowModal(
+        true,
+        questionModalFormTextInformation(true),
+        () => {
+          dispatch(NotaDePedido_ReduxAction_Add(props.objProduct));
+        }
+      )
+    );
   };
   const bnQuitarOnClick = () => {
- 
-
-   dispatch(NotaDePedido_ReduxAction_Remove(props.objProduct));
+    let objFinded = state.arrNotaDePedido.find(
+      (obj) => obj.objProduct.id === props.objProduct.id
+    );
+    if (objFinded) {
+      dispatch(
+        FrmModalSiNo_ReduxAction_ShowModal(
+          true,
+          questionModalFormTextInformation(false),
+          () => {
+            dispatch(NotaDePedido_ReduxAction_Remove(props.objProduct));
+          }
+        )
+      );
+    }
   };
 
   const eventMouseEnter = () => {

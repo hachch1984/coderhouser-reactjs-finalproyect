@@ -1,4 +1,5 @@
 import { Action } from "redux";
+
  
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -24,13 +25,13 @@ const Type_FrmModalSiNo_ShowModal = Type + "FrmModalSiNo_ShowModal";
 interface IFrmModalSiNo_Action_ShowModal
   extends Action<typeof Type_FrmModalSiNo_ShowModal> {
     show:boolean,
-  message?: string;
+  message?: JSX.Element;
   yesOnClick?: () => void;
   noOnClick?: () => void;
 }
 export const FrmModalSiNo_ReduxAction_ShowModal = (
   show:boolean,
-  message?: string,
+  message?: JSX.Element,
   yesOnClick?: () => void,
   noOnClick?: () => void
 ): IFrmModalSiNo_Action_ShowModal => ({
@@ -42,12 +43,14 @@ export const FrmModalSiNo_ReduxAction_ShowModal = (
 });
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
 export interface Redux_FrmModal_State {
   frmModalLoading_show: boolean;
   frmModalSiNo_show: boolean;
   yesOnClick?: () => void;
   noOnClick?: () => void;
-  message?: string;
+  message?: JSX.Element;
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -56,9 +59,9 @@ export const Redux_FrmModal_Reducer = (
   state: Redux_FrmModal_State = {
     frmModalLoading_show: false,
     frmModalSiNo_show: false,
-    yesOnClick: () => {},
-    noOnClick: () => {},
-    message: "",
+    yesOnClick: undefined,
+    noOnClick: undefined,
+    message: undefined,
   },
   action: IFrmModalLoading_Action_ShowModal | IFrmModalSiNo_Action_ShowModal
 ): Redux_FrmModal_State => {

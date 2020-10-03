@@ -3,8 +3,7 @@ import React from "react";
 import { Img_LogoCompleteHorizontal } from "../../images/ImageCollection";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faShoppingCart,faList } from "@fortawesome/free-solid-svg-icons";
-import { Utilities_Color_Blue } from "../../utilities/Color";
+import { faSearch, faShoppingCart,faList } from "@fortawesome/free-solid-svg-icons"; 
 import { Link } from "react-router-dom";
 import { FrmListadoProducto_Url } from "../product/FrmListadoProducto"; 
 import { useDispatch, useSelector } from "react-redux";
@@ -61,7 +60,7 @@ const CmpHeader: React.FC<{
                 className={className1 + "global-cursor-pointer "}
               >
                 <FontAwesomeIcon
-                  color={Utilities_Color_Blue}
+                className='global-color-blue'                
                   icon={faShoppingCart}
                 />
 
@@ -78,7 +77,7 @@ const CmpHeader: React.FC<{
                 className={className1 + "global-cursor-pointer "}
               >
                 <FontAwesomeIcon
-                  color={Utilities_Color_Blue}
+                className='global-color-blue'                
                   icon={faList}
                 />
 
