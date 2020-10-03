@@ -1,0 +1,123 @@
+@font-face {
+  font-family: Roboto;
+  src: url("fonts/roboto/Roboto-Regular.ttf") format("opentype");
+}
+
+@font-face {
+  font-family: Roboto;
+  font-weight: bold;
+  src: url("fonts/roboto/Roboto-Bold.ttf") format("opentype");
+}
+body {
+  font-family: "Roboto";
+  font-size: 16px;
+}
+/**********************************************************************************************************************************************************/
+
+.global-font-size-h1 {
+  font-size: 4rem;
+}
+.global-font-size-h2 {
+  font-size: 3.5rem;
+}
+
+.global-font-size-h3 {
+  font-size: 3rem;
+}
+
+.global-font-size-h4 {
+  font-size: 2.5rem;
+}
+
+.global-font-size-h5 {
+  font-size: 2rem;
+}
+
+.global-font-size-h6 {
+  font-size: 1.5rem;
+}
+/**********************************************************************************************************************************************************/
+
+$color-empresa-blue: #273481;
+$color-empresa-yellow: #fff159;
+$color-empresa-orange: #f8bb59;
+
+.global-color-blue {
+  color: $color-empresa-blue;
+}
+.global-color-orange {
+  color: $color-empresa-orange;
+}
+.global-color-yellow {
+  color: $color-empresa-yellow;
+}
+
+.global-background-color-blue {
+  background-color: $color-empresa-blue;
+}
+.global-background-color-orange {
+  background-color: $color-empresa-orange;
+}
+.global-background-color-yellow {
+  background-color: $color-empresa-yellow;
+}
+
+.global-font-size-6 {
+  font-size: 0.6rem;
+}
+.global-font-size-7 {
+  font-size: 0.7rem;
+}
+.global-font-size-8 {
+  font-size: 0.8rem;
+}
+.global-font-size-9 {
+  font-size: 0.9rem;
+}
+
+.global-borderRadius-50 {
+  border-radius: 50%;
+}
+
+/**********************************************************************************************************************************************************/
+.global-btn-1 {
+  padding: 1rem;
+  color: white;
+  background-color: $color-empresa-blue;
+  :hover {
+    background-color: lightblue;
+  }
+}
+/**********************************************************************************************************************************************************/
+
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: lightgray;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: lightgray;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: lightgray;
+}
+
+/**********************************************************************************************************************************************************/
+.global-cursor-pointer {
+  cursor: pointer;
+}
+
+.global-shadow {   
+   box-shadow: -2px 13px 30px 0px rgba(0, 0, 0, 0.39);
+}
+
+.global-hover-bold{
+  
+  :hover{
+    font-weight: bolder;    
+  }
+}

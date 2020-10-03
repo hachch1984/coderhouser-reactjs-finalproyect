@@ -1,0 +1,192 @@
+import React, { useEffect, useRef, useState } from "react";
+import { IProduct } from "../../entities/IProduct";
+import { Img_NoImage } from "../../images/ImageCollection";
+import CompLoading from "../modalForm/CompLoading";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlusSquare,
+  faMinusSquare,
+  faShoppingCart,
+} from "@fortawesome/free-solid-svg-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store/Stores";
+import {
+  NotaDePedido_ReduxAction_Add,
+  NotaDePedido_ReduxAction_Remove,
+} from "./Redux";
+
+const CmpProductCard: React.FC<{
+  objProduct: IProduct;
+  showAddButton?: boolean;
+  showRemoveButton?: boolean;
+  showTotalSelectedItems?: boolean;
+  defaultOrientation: "vertical" | "horizontal" | "mixed";
+  alwaysCol12?: boolean;
+}> = (props) => {
+  const state = useSelector((obj: RootState) => obj.NotaDePedido);
+  const dispatch = useDispatch();
+  const [image_value, image_setValue] = useState("");
+  const getImg = async () => {
+    let request = await fetch(props.objProduct.url);
+    let response = await request.blob();
+    image_setValue(URL.createObjectURL(response));
+  };
+
+  const objDiv1 = useRef<HTMLDivElement>(null);
+  const objDiv2 = useRef<HTMLDivElement>(null);
+  const objP = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    getImg();
+  }, []);
+
+  const bnAgregarOnClick = () => {
+    dispatch(NotaDePedido_ReduxAction_Add(props.objProduct));
+  };
+  const bnQuitarOnClick = () => {
+ 
+
+   dispatch(NotaDePedido_ReduxAction_Remove(props.objProduct));
+  };
+
+  const eventMouseEnter = () => {
+    objDiv1.current?.classList.add("global-shadow");
+    objDiv2.current?.classList.add("font-weight-bolder");
+    objP.current?.classList.add("pt-1");
+  };
+  const eventMouseLeave = () => {
+    objDiv1.current?.classList.remove("global-shadow");
+    objDiv2.current?.classList.remove("font-weight-bolder");
+    objP.current?.classList.remove("pt-1");
+  };
+
+  const buttonsAddAndRemove = () => {
+    let buttonAdd = props.showAddButton && (
+      <div
+        onClick={() => bnAgregarOnClick()}
+        className="global-color-blue global-cursor-pointer d-flex align-items-center   global-hover-bold"
+      >
+        <FontAwesomeIcon icon={faPlusSquare} />
+        <span className="global-font-size-8 ml-1 font-weight-bolder">
+          Agregar
+        </span>
+      </div>
+    );
+
+    let totalSelectedItems = props.showTotalSelectedItems && (
+      <div>
+        <div className="global-color-blue d-flex align-items-center   global-hover-bold">
+          <FontAwesomeIcon icon={faShoppingCart} />
+          <span
+            className="global-background-color-blue text-white global-font-size-7 p-1 ml-1"
+            style={{ borderRadius: "50%" }}
+          >
+            {
+              state.arrNotaDePedido.filter(
+                (obj) => obj.objProduct.id === props.objProduct.id
+              )[0]?.cantidad
+            }
+          </span>
+        </div>
+      </div>
+    );
+
+    let buttonRemove = props.showRemoveButton && (
+      <div
+        onClick={() => bnQuitarOnClick()}
+        className="global-color-blue global-cursor-pointer d-flex align-items-center   global-hover-bold"
+      >
+        <span className="global-font-size-8 mr-1 font-weight-bolder">
+          Quitar
+        </span>
+        <FontAwesomeIcon icon={faMinusSquare} />
+      </div>
+    );
+
+    if (props.showAddButton || props.showRemoveButton) {
+      return (
+        <div className="d-flex justify-content-between mt-2">
+          {buttonAdd}
+          {totalSelectedItems}
+          {buttonRemove}
+        </div>
+      );
+    }
+  };
+
+  const horientation = () => {
+    let str = "";
+
+    switch (props.defaultOrientation) {
+      case "horizontal":
+        str = " col-6 ";
+        break;
+      case "mixed":
+        str = " col-6 col-sm-12 ";
+        break;
+      case "vertical":
+        str = " col-sm-12 ";
+        break;
+    }
+    return str;
+  };
+
+  return (
+    <div
+      className={
+        props.alwaysCol12
+          ? "col-12 m-1"
+          : "col-12 col-sm-5 col-md-4 col-lg-3 col-xl-2 m-1"
+      }
+    >
+      <div
+        ref={objDiv1}
+        className="card   "
+        style={{ maxHeight: "400px" }}
+        onMouseEnter={eventMouseEnter}
+        onMouseLeave={eventMouseLeave}
+      >
+        <div className="container-fluid p-0">
+          <div className="row no-gutters">
+            <div className={horientation()}>
+              <img
+                className="card-img-top"
+                style={{
+                  maxHeight: "200px",
+                  height:
+                    props.defaultOrientation === "horizontal"
+                      ? "100%"
+                      : undefined,
+                }}
+                src={image_value === "" ? Img_NoImage : image_value}
+                alt={props.objProduct.name}
+              />
+            </div>
+            <div
+              className={
+                horientation() +
+                " p-3 d-flex flex-column justify-content-around "
+              }
+            >
+              <div ref={objDiv2}>
+                <p className=" ">{props.objProduct.name} </p>
+                <p className="global-font-size-9 my-2">
+                  '$'{props.objProduct.price}{" "}
+                </p>
+              </div>
+              <p ref={objP} className="card-text global-font-size-7 text-muted">
+                Some quick example text to build on the card title and make up
+                the bulk of the card's content.
+              </p>
+
+              {buttonsAddAndRemove()}
+            </div>
+          </div>
+        </div>
+      </div>
+      {image_value === "" && <CompLoading />}
+    </div>
+  );
+};
+
+export default CmpProductCard;
