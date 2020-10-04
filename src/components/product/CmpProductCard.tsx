@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { IProduct } from "../../entities/IProduct";
+import { IItem } from "../../entities/IItem";
 import { Img_NoImage } from "../../images/ImageCollection";
 import CompLoading from "../modalForm/CompLoading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,23 +13,23 @@ import { RootState } from "../../store/Stores";
 import {
   NotaDePedido_ReduxAction_Add,
   NotaDePedido_ReduxAction_Remove,
-} from "./Redux";
+} from "../../entities/Redux";
 import { FrmModalSiNo_ReduxAction_ShowModal } from "../modalForm/Redux";
 import { INotaDePedido } from "../../entities/INotaDePedido";
 
 const CmpProductCard: React.FC<{
-  objProduct: IProduct;
+  objItem: IItem;
   showAddButton?: boolean;
   showRemoveButton?: boolean;
   showTotalSelectedItems?: boolean;
   defaultOrientation: "vertical" | "horizontal" | "mixed";
   alwaysCol12?: boolean;
 }> = (props) => {
-  const state = useSelector((obj: RootState) => obj.NotaDePedido);
+  const state = useSelector((obj: RootState) => obj.Entity);
   const dispatch = useDispatch();
   const [image_value, image_setValue] = useState("");
   const getImg = async () => {
-    let request = await fetch(props.objProduct.url);
+    let request = await fetch(props.objItem.img);
     let response = await request.blob();
     image_setValue(URL.createObjectURL(response));
   };
@@ -44,21 +44,21 @@ const CmpProductCard: React.FC<{
 
   const questionModalFormTextInformation = (isAdd: boolean) => {
     let objFinded = state.arrNotaDePedido.find(
-      (obj) => obj.objProduct.id === props.objProduct.id
+      (obj) => obj.objItem.id === props.objItem.id
     );
     return (
       <React.Fragment>
-        <p>         
+        <p  >
           {isAdd
             ? "esta segur@ de agregar al carrito el producto:"
             : "esta segur@ de retirar del carrito el producto"}
         </p>
-        <p className="global-font-size-h3 global-color-blue my-4">
-          {props.objProduct.name}
+        <p  className="global-font-size-h3 global-color-blue my-4">
+          {props.objItem.title}
         </p>
 
         {objFinded && (
-          <p className="text-muted global-font-size-9">
+          <p   className="text-muted global-font-size-9">
             Productos del mismo tipo ingresados en el carrito:{" "}
             {objFinded.cantidad} <FontAwesomeIcon icon={faShoppingCart} />
           </p>
@@ -73,14 +73,14 @@ const CmpProductCard: React.FC<{
         true,
         questionModalFormTextInformation(true),
         () => {
-          dispatch(NotaDePedido_ReduxAction_Add(props.objProduct));
+          dispatch(NotaDePedido_ReduxAction_Add(props.objItem));
         }
       )
     );
   };
   const bnQuitarOnClick = () => {
     let objFinded = state.arrNotaDePedido.find(
-      (obj) => obj.objProduct.id === props.objProduct.id
+      (obj) => obj.objItem.id === props.objItem.id
     );
     if (objFinded) {
       dispatch(
@@ -88,7 +88,7 @@ const CmpProductCard: React.FC<{
           true,
           questionModalFormTextInformation(false),
           () => {
-            dispatch(NotaDePedido_ReduxAction_Remove(props.objProduct));
+            dispatch(NotaDePedido_ReduxAction_Remove(props.objItem));
           }
         )
       );
@@ -129,7 +129,7 @@ const CmpProductCard: React.FC<{
           >
             {
               state.arrNotaDePedido.filter(
-                (obj) => obj.objProduct.id === props.objProduct.id
+                (obj) => obj.objItem.id === props.objItem.id
               )[0]?.cantidad
             }
           </span>
@@ -205,7 +205,7 @@ const CmpProductCard: React.FC<{
                       : undefined,
                 }}
                 src={image_value === "" ? Img_NoImage : image_value}
-                alt={props.objProduct.name}
+                alt={props.objItem.title}
               />
             </div>
             <div
@@ -215,14 +215,13 @@ const CmpProductCard: React.FC<{
               }
             >
               <div ref={objDiv2}>
-                <p className=" ">{props.objProduct.name} </p>
+                <p className=" ">{props.objItem.title} </p>
                 <p className="global-font-size-9 my-2">
-                  '$'{props.objProduct.price}{" "}
+                  '$'{props.objItem.price}{" "}
                 </p>
               </div>
               <p ref={objP} className="card-text global-font-size-7 text-muted">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
+                {props.objItem.description}
               </p>
 
               {buttonsAddAndRemove()}

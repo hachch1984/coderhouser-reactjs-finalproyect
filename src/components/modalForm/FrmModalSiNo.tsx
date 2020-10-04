@@ -28,9 +28,9 @@ const FrmModalSiNo: React.FC = () => {
         </div>
 
         <div className="card-body py-5">
-          <p className="card-text text-center global-font-size-h5 ">
+          <div className="card-text text-center global-font-size-h5 ">
             {state.message}
-          </p>
+          </div>
         </div>
         <div className="card-footer d-flex justify-content-center global-background-color-yellow">
           <button

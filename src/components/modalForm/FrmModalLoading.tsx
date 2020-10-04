@@ -32,16 +32,9 @@ const FrmModalLoading = () => {
   return (
     <FrmModal>
       <div style={divCss}>
-        <img style={imgCss} src={Gif_Loading1}></img>
-        <h2 className="global-font-size-h2 text-white">Cargando</h2>
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
-          }}
-        >
-          close
-        </button>
+       {/* <img style={imgCss} src={Gif_Loading1}></img>*/}
+        <h2 className="global-font-size-h1 text-white">Cargando</h2>
+        
       </div>
     </FrmModal>
   );

@@ -1,6 +1,6 @@
-import { IProduct } from "./IProduct";
+import { IItem } from "./IItem";
 
 export interface INotaDePedido{
-    objProduct:IProduct,
+    objItem:IItem,
     cantidad:number
 }

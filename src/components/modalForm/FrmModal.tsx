@@ -2,7 +2,7 @@ import React, { CSSProperties, useEffect } from "react";
 
 const divCss: CSSProperties = {
   position: "fixed",
-  backgroundColor: "rgba(69, 48, 48, 0.3)",
+  backgroundColor: "rgba(69, 48, 48, 0.7)",
  bottom:'0',
  left:'0',
   width: "100vw",

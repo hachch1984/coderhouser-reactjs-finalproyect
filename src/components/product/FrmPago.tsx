@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreditCard, faDollarSign } from "@fortawesome/free-solid-svg-icons";
 
 const FrmPago: React.FC = (props) => {
-  const state = useSelector((obj: RootState) => obj.NotaDePedido);
+  const state = useSelector((obj: RootState) => obj.Entity);
 
   return (
     <FrmHeaderBodyFooter
@@ -22,9 +22,9 @@ const FrmPago: React.FC = (props) => {
               <div className="row   ">
                 {state.arrNotaDePedido.map((obj) => (
                   <CmpProductCard
-                    key={obj.objProduct.id}
+                    key={obj.objItem.id}
                     defaultOrientation="horizontal"
-                    objProduct={obj.objProduct}
+                    objItem={obj.objItem}
                     showRemoveButton={true}
                     showTotalSelectedItems={true}
                     alwaysCol12={true}
@@ -38,7 +38,7 @@ const FrmPago: React.FC = (props) => {
               <div className="card-body   d-flex flex-column justify-content-center align-items-center  mx-4 ">
                 <p className='my-3 global-font-size-h5 global-color-blue'>Total a Pagar</p>
                 <p className='my-3 global-font-size-h4 global-color-blue'>                 
-                  <FontAwesomeIcon icon={faDollarSign} className="mr-1" />  {state.arrNotaDePedido.map(obj=>obj.cantidad*obj.objProduct.price).reduce((a,b)=>a+b,0) }
+                  <FontAwesomeIcon icon={faDollarSign} className="mr-1" />  {state.arrNotaDePedido.map(obj=>obj.cantidad*obj.objItem.price).reduce((a,b)=>a+b,0) }
                 </p>
                 <button className="btn btn-primary my-3 px-5">
                   <FontAwesomeIcon icon={faCreditCard} className="mr-3" /> Pagar
