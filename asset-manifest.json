@@ -1,0 +1,37 @@
+{
+  "files": {
+    "main.css": "/coderhouser-reactjs-finalproyect/static/css/main.73dbd826.chunk.css",
+    "main.js": "/coderhouser-reactjs-finalproyect/static/js/main.9b5a7c30.chunk.js",
+    "main.js.map": "/coderhouser-reactjs-finalproyect/static/js/main.9b5a7c30.chunk.js.map",
+    "runtime-main.js": "/coderhouser-reactjs-finalproyect/static/js/runtime-main.fe1929cd.js",
+    "runtime-main.js.map": "/coderhouser-reactjs-finalproyect/static/js/runtime-main.fe1929cd.js.map",
+    "static/css/2.8aa5a7f8.chunk.css": "/coderhouser-reactjs-finalproyect/static/css/2.8aa5a7f8.chunk.css",
+    "static/js/2.8159b265.chunk.js": "/coderhouser-reactjs-finalproyect/static/js/2.8159b265.chunk.js",
+    "static/js/2.8159b265.chunk.js.map": "/coderhouser-reactjs-finalproyect/static/js/2.8159b265.chunk.js.map",
+    "index.html": "/coderhouser-reactjs-finalproyect/index.html",
+    "precache-manifest.94976d73af5dcd077a7a63ec99cd1448.js": "/coderhouser-reactjs-finalproyect/precache-manifest.94976d73af5dcd077a7a63ec99cd1448.js",
+    "service-worker.js": "/coderhouser-reactjs-finalproyect/service-worker.js",
+    "static/css/2.8aa5a7f8.chunk.css.map": "/coderhouser-reactjs-finalproyect/static/css/2.8aa5a7f8.chunk.css.map",
+    "static/css/main.73dbd826.chunk.css.map": "/coderhouser-reactjs-finalproyect/static/css/main.73dbd826.chunk.css.map",
+    "static/js/2.8159b265.chunk.js.LICENSE.txt": "/coderhouser-reactjs-finalproyect/static/js/2.8159b265.chunk.js.LICENSE.txt",
+    "static/media/global.scss": "/coderhouser-reactjs-finalproyect/static/media/Roboto-Regular.11eabca2.ttf",
+    "static/media/flagPeru.png": "/coderhouser-reactjs-finalproyect/static/media/flagPeru.9449b8c6.png",
+    "static/media/gif_loading1.gif": "/coderhouser-reactjs-finalproyect/static/media/gif_loading1.1b3bbc74.gif",
+    "static/media/henry.jpg": "/coderhouser-reactjs-finalproyect/static/media/henry.99914ee4.jpg",
+    "static/media/logo.svg": "/coderhouser-reactjs-finalproyect/static/media/logo.5d5d9eef.svg",
+    "static/media/logoCoderHouse.png": "/coderhouser-reactjs-finalproyect/static/media/logoCoderHouse.fba7af5d.png",
+    "static/media/logoComplete.png": "/coderhouser-reactjs-finalproyect/static/media/logoComplete.a7bd62f4.png",
+    "static/media/logoHands.png": "/coderhouser-reactjs-finalproyect/static/media/logoHands.0339384d.png",
+    "static/media/logoPrincipalCompleteHorizontal.png": "/coderhouser-reactjs-finalproyect/static/media/logoPrincipalCompleteHorizontal.74ad4e07.png",
+    "static/media/logoReact.png": "/coderhouser-reactjs-finalproyect/static/media/logoReact.8d9c2eee.png",
+    "static/media/logoText.png": "/coderhouser-reactjs-finalproyect/static/media/logoText.b5e9166d.png",
+    "static/media/noImage1.png": "/coderhouser-reactjs-finalproyect/static/media/noImage1.7ed9047b.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fe1929cd.js",
+    "static/css/2.8aa5a7f8.chunk.css",
+    "static/js/2.8159b265.chunk.js",
+    "static/css/main.73dbd826.chunk.css",
+    "static/js/main.9b5a7c30.chunk.js"
+  ]
+}
