@@ -12,15 +12,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/Stores";
 import {
   NotaDePedido_ReduxAction_Add,
-  NotaDePedido_ReduxAction_Remove,
-  ThunkAction_AddItem,
+  NotaDePedido_ReduxAction_Remove,  
 } from "../../entities/Redux";
 import {
   FrmModalLoading_ReduxAction_ShowModal,
   FrmModalSiNo_ReduxAction_ShowModal,
-} from "../modalForm/Redux";
-import { INotaDePedido } from "../../entities/INotaDePedido";
-import FrmModalLoading from "../modalForm/FrmModalLoading";
+} from "../modalForm/Redux"; 
 import { getFirestore } from "../../firebase";
 
 const CmpProductCard: React.FC<{

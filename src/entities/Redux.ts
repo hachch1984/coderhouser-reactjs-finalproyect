@@ -122,44 +122,7 @@ interface Redux_Entity_State {
 
 
 
-
-
-export const ThunkAction_AddItem = (objItem:IItem): ThunkAction<
-  void,
-  RootState,
-  undefined,
-  INotaDePedido_Action_Add| IFrmModalLoading_Action_ShowModal
-> => async (dispatch, getState) => {
-  
-  try {
-
-console.log('ThunkAction_AddItem')
-dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
-    dispatch(NotaDePedido_ReduxAction_Add(objItem));
-
-
-    const db = getFirestore();
-
-    let obj = {
-      email:getState().Entity.email,
-      items: getState().Entity.arrNotaDePedido.map((obj) => ({
-        itemId: obj.itemId.id,
-        cantidad: obj.cantidad,
-      })),
-    };
-
-    await db.collection("orders").doc(getState().Entity.userId).update(obj);
-
-    
-  } catch (ex) {
-    console.log("error", ex);
-  } finally {
-    dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
-  }
-};
-
-
-
+ 
 
 export const Redux_Entity_Reducer = (
   state: Redux_Entity_State = {

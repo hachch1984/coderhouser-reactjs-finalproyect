@@ -1,29 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { IItem } from "../../entities/IItem";
+import React, { useEffect, useState } from "react"; 
 import CmpProductCard from "./CmpProductCard";
 import FrmHeaderBodyFooter from "../layout/FrmHeaderBodyFooter";
-import { useDispatch, useSelector } from "react-redux";
-import { FrmModalLoading_ReduxAction_ShowModal } from "../modalForm/Redux";
-import { getFirestore } from "../../firebase";
-import { ICategory } from "../../entities/ICategory";
-import {
-  Category_ReduxAction_Add,
-  Item_ReduxAction_Add,
-} from "../../entities/Redux";
+import { useDispatch, useSelector } from "react-redux"; 
 import { RootState } from "../../store/Stores";
 
 const FrmListadoProducto: React.FC = (props) => {
-  const dispatch = useDispatch();
+   
   const state = useSelector((obj: RootState) => obj.Entity);
   
   useEffect(() => {
   
-
-
-
-
-
-    
   }, []);
  
   return (
