@@ -2,7 +2,7 @@ import { Action } from "redux";
 import { INotaDePedido } from "./INotaDePedido";
 import { IItem } from "./IItem";
 import { ICategory } from "./ICategory";
-import { ThunkAction } from "redux-thunk";
+ 
 import { RootState } from "../store/Stores";
 import { getFirestore } from "../firebase";
 import { FrmModalLoading_ReduxAction_ShowModal, IFrmModalLoading_Action_ShowModal } from "../components/modalForm/Redux";
