@@ -48,6 +48,10 @@ const CmpHeader: React.FC<{
                 src={Img_LogoCompleteHorizontal}
               ></img>
             </Link>
+
+            <p className=" mx-3  mt-3 mt-lg-0 global-color-blue">
+              {state.email}
+            </p>
             {!props.hideTextBox && (
               <div
                 className={
@@ -62,60 +66,38 @@ const CmpHeader: React.FC<{
                   <select
                     value={state.selectedCategoryId}
                     onChange={async (event) => {
-                      dispatch(FrmModalLoading_ReduxAction_ShowModal(true));
-                      dispatch(Item_ReduxAction_Add([]));
-                      const db = getFirestore();
-
-                      let arrItem: IItem[] = [];
-
-                      if (event.target.value === "ALL") {
-                        db.collection("items")
-
-                          .get()
-                          .then((x) => {
-                            x.docs.forEach((doc) => {
-                              let objItem = doc.data() as IItem;
-                              objItem.id = doc.id;
-                              arrItem.push(objItem);
-                            });
-                            dispatch(Item_ReduxAction_Add(arrItem));
-                          })
-                          .catch((ex) => {
-                            console.log("error", ex);
-                          })
-                          .finally(() => {
-                            dispatch(
-                              FrmModalLoading_ReduxAction_ShowModal(false)
-                            );
-                          });
-
+                      try {
+                        dispatch(FrmModalLoading_ReduxAction_ShowModal(true));
+                        dispatch(Item_ReduxAction_Add([]));
                         dispatch(
                           Category_ReduxAction_SetSelected(event.target.value)
                         );
-                      } else {
-                        db.collection("items")
-                          .where("categoryId", "==", event.target.value)
-                          .get()
-                          .then((x) => {
-                            x.docs.forEach((doc) => {
-                              let objItem = doc.data() as IItem;
-                              objItem.id = doc.id;
-                              arrItem.push(objItem);
-                            });
-                            dispatch(Item_ReduxAction_Add(arrItem));
-                          })
-                          .catch((ex) => {
-                            console.log("error", ex);
-                          })
-                          .finally(() => {
-                            dispatch(
-                              FrmModalLoading_ReduxAction_ShowModal(false)
-                            );
-                          });
+                        const db = getFirestore();
 
-                        dispatch(
-                          Category_ReduxAction_SetSelected(event.target.value)
-                        );
+                        let arrItem: IItem[] = [];
+
+                        let response: firebase.firestore.QuerySnapshot;
+
+                        if (event.target.value === "ALL") {
+                          response = await db.collection("items").get();
+                        } else {
+                          response = await db
+                            .collection("items")
+                            .where("categoryId", "==", event.target.value)
+                            .get();
+                        }
+
+                        response.docs.forEach((doc) => {
+                          let objItem = doc.data() as IItem;
+                          objItem.id = doc.id;
+                          arrItem.push(objItem);
+                        });
+
+                        dispatch(Item_ReduxAction_Add(arrItem));
+                      } catch (ex) {
+                        console.log("error", ex);
+                      } finally {
+                        dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
                       }
                     }}
                     className="ml-2 w-100"

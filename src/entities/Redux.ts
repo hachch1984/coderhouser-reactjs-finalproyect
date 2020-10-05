@@ -2,6 +2,10 @@ import { Action } from "redux";
 import { INotaDePedido } from "./INotaDePedido";
 import { IItem } from "./IItem";
 import { ICategory } from "./ICategory";
+import { ThunkAction } from "redux-thunk";
+import { RootState } from "../store/Stores";
+import { getFirestore } from "../firebase";
+import { FrmModalLoading_ReduxAction_ShowModal, IFrmModalLoading_Action_ShowModal } from "../components/modalForm/Redux";
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 const Type = "Entities_";
@@ -18,6 +22,18 @@ export const NotaDePedido_ReduxAction_Add = (
   objItem,
 });
 //-----------------------------------------------------------------------------------------------------------------------------------------------
+const Type_NotaDePedido_AddArray = Type + "NotaDePedido_AddArray";
+interface INotaDePedido_Action_AddArray
+  extends Action<typeof Type_NotaDePedido_AddArray> {
+  arrNotaDePedido: INotaDePedido[];
+}
+export const NotaDePedido_ReduxAction_AddArray = (
+  arrNotaDePedido: INotaDePedido[]
+): INotaDePedido_Action_AddArray => ({
+  type: Type_NotaDePedido_AddArray,
+  arrNotaDePedido,
+});
+//-----------------------------------------------------------------------------------------------------------------------------------------------
 const Type_NotaDePedido_Remove = Type + "NotaDePedido_Remove";
 interface INotaDePedido_Action_Remove
   extends Action<typeof Type_NotaDePedido_Remove> {
@@ -25,7 +41,7 @@ interface INotaDePedido_Action_Remove
 }
 export const NotaDePedido_ReduxAction_Remove = (
   objItem: IItem
-): INotaDePedido_Action_Add => ({
+): INotaDePedido_Action_Remove => ({
   type: Type_NotaDePedido_Remove,
   objItem,
 });
@@ -65,14 +81,85 @@ export const Category_ReduxAction_SetSelected = (
 });
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
+const Type_Order_SetEmail = Type + "Order_SetEmail";
+interface IOrder_Action_SetEmail extends Action<typeof Type_Order_SetEmail> {
+  email: string;
+}
+export const Order_ReduxAction_SetEmail = (
+  email: string
+): IOrder_Action_SetEmail => ({
+  type: Type_Order_SetEmail,
+  email,
+});
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+const Type_Order_SetUserId = Type + "Order_SetUserId";
+interface IOrder_Action_SetUserId extends Action<typeof Type_Order_SetUserId> {
+  userId: string;
+}
+export const Order_ReduxAction_SetUserId = (
+  userId: string
+): IOrder_Action_SetUserId => ({
+  type: Type_Order_SetUserId,
+  userId,
+});
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------
 
 interface Redux_Entity_State {
   arrNotaDePedido: INotaDePedido[];
   arrCategories: ICategory[];
   selectedCategoryId: string;
   arrItem: IItem[];
+  email: string;
+  userId: string;
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+export const ThunkAction_AddItem = (objItem:IItem): ThunkAction<
+  void,
+  RootState,
+  undefined,
+  INotaDePedido_Action_Add| IFrmModalLoading_Action_ShowModal
+> => async (dispatch, getState) => {
+  
+  try {
+
+console.log('ThunkAction_AddItem')
+dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
+    dispatch(NotaDePedido_ReduxAction_Add(objItem));
+
+
+    const db = getFirestore();
+
+    let obj = {
+      email:getState().Entity.email,
+      items: getState().Entity.arrNotaDePedido.map((obj) => ({
+        itemId: obj.itemId.id,
+        cantidad: obj.cantidad,
+      })),
+    };
+
+    await db.collection("orders").doc(getState().Entity.userId).update(obj);
+
+    
+  } catch (ex) {
+    console.log("error", ex);
+  } finally {
+    dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
+  }
+};
+
+
+
 
 export const Redux_Entity_Reducer = (
   state: Redux_Entity_State = {
@@ -80,26 +167,37 @@ export const Redux_Entity_Reducer = (
     arrCategories: [],
     selectedCategoryId: "ALL",
     arrItem: [],
+    email: "",
+    userId: "",
   },
-  
+
   action:
     | INotaDePedido_Action_Add
     | INotaDePedido_Action_Remove
     | ICategory_Action_Add
     | ICategory_Action_SetSelected
     | IItem_Action_Add
+    | IOrder_Action_SetEmail
+    |IOrder_Action_SetUserId
+    |INotaDePedido_Action_AddArray
 ): Redux_Entity_State => {
   switch (action.type) {
+    case Type_NotaDePedido_AddArray:{
+      return {...state,arrNotaDePedido:(action as INotaDePedido_Action_AddArray).arrNotaDePedido}
+    }
+    case Type_Order_SetUserId: {
+      return { ...state, userId: (action as IOrder_Action_SetUserId).userId };
+    }
+    case Type_Order_SetEmail: {
+      return { ...state, email: (action as IOrder_Action_SetEmail).email };
+    }
     case Type_Item_Add: {
       let objAction = action as IItem_Action_Add;
       return { ...state, arrItem: objAction.arrItem };
     }
     case Type_Category_SetSelected: {
       let objAction = action as ICategory_Action_SetSelected;
-      let x = { ...state, selectedCategoryId: objAction.id 
-      };
-      console.log('redux',x)
-   return x
+      return { ...state, selectedCategoryId: objAction.id };
     }
     case Type_Category_Add: {
       let objAction = action as ICategory_Action_Add;
@@ -109,14 +207,14 @@ export const Redux_Entity_Reducer = (
       let objAction = action as INotaDePedido_Action_Add;
 
       let index = state.arrNotaDePedido.findIndex(
-        (obj) => obj.objItem.id === objAction.objItem.id
+        (obj) => obj.itemId.id === objAction.objItem.id
       );
 
       if (index >= 0) {
         return {
           ...state,
           arrNotaDePedido: state.arrNotaDePedido.map((obj) => {
-            if (obj.objItem.id === objAction.objItem.id) {
+            if (obj.itemId.id === objAction.objItem.id) {
               obj.cantidad++;
             }
             return obj;
@@ -127,7 +225,7 @@ export const Redux_Entity_Reducer = (
           ...state,
           arrNotaDePedido: [
             ...state.arrNotaDePedido,
-            { objItem: objAction.objItem, cantidad: 1 },
+            { itemId: objAction.objItem, cantidad: 1 },
           ],
         };
       }
@@ -138,7 +236,7 @@ export const Redux_Entity_Reducer = (
         ...state,
         arrNotaDePedido: state.arrNotaDePedido
           .map((obj) => {
-            if (obj.objItem.id === objAction.objItem.id) {
+            if (obj.itemId.id === objAction.objItem.id) {
               obj.cantidad--;
             }
             return obj;

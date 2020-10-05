@@ -3,15 +3,13 @@ import FrmModal from "./FrmModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { FrmModalSiNo_ReduxAction_ShowModal } from "./Redux";
+import { FrmModalMessage_ReduxAction_ShowModal, FrmModalSiNo_ReduxAction_ShowModal } from "./Redux";
 import { RootState } from "../../store/Stores";
 
-const FrmModalSiNo: React.FC = () => {
+const FrmModalMessage: React.FC = () => {
   const dispatch = useDispatch();
 
-  const showFalse = () => {
-    dispatch(FrmModalSiNo_ReduxAction_ShowModal(false));
-  };
+   
 
   const state = useSelector((obj: RootState) => obj.FrmModal);
 
@@ -29,34 +27,18 @@ const FrmModalSiNo: React.FC = () => {
 
         <div className="card-body py-5">
           <div className="card-text text-center global-font-size-h5 ">
-            {state.frmModalSiNo_message}
+            {state.frmModalMessage_message}
           </div>
         </div>
         <div className="card-footer d-flex justify-content-center global-background-color-yellow">
           <button
             className="btn btn-primary"
             onClick={() => {
-              if (state.frmModalSiNo_yesOnClick) {
-                state.frmModalSiNo_yesOnClick();
-              }
-              showFalse();
+                dispatch(FrmModalMessage_ReduxAction_ShowModal(false));
             }}
           >
             <FontAwesomeIcon className="mr-1" icon={faCheck} />
-            SI
-          </button>
-
-          <button
-            className="btn btn-danger ml-5"
-            onClick={() => {
-              if (state.frmModalSiNo_noOnClick) {
-                state.frmModalSiNo_noOnClick();
-              }
-              showFalse();
-            }}
-          >
-            <FontAwesomeIcon className="mr-1" icon={faTimes} />
-            NO
+            ACEPTAR
           </button>
         </div>
       </div>
@@ -64,4 +46,4 @@ const FrmModalSiNo: React.FC = () => {
   );
 };
 
-export default FrmModalSiNo;
+export default FrmModalMessage;

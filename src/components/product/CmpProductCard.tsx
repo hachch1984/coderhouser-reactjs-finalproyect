@@ -13,9 +13,15 @@ import { RootState } from "../../store/Stores";
 import {
   NotaDePedido_ReduxAction_Add,
   NotaDePedido_ReduxAction_Remove,
+  ThunkAction_AddItem,
 } from "../../entities/Redux";
-import { FrmModalSiNo_ReduxAction_ShowModal } from "../modalForm/Redux";
+import {
+  FrmModalLoading_ReduxAction_ShowModal,
+  FrmModalSiNo_ReduxAction_ShowModal,
+} from "../modalForm/Redux";
 import { INotaDePedido } from "../../entities/INotaDePedido";
+import FrmModalLoading from "../modalForm/FrmModalLoading";
+import { getFirestore } from "../../firebase";
 
 const CmpProductCard: React.FC<{
   objItem: IItem;
@@ -44,21 +50,21 @@ const CmpProductCard: React.FC<{
 
   const questionModalFormTextInformation = (isAdd: boolean) => {
     let objFinded = state.arrNotaDePedido.find(
-      (obj) => obj.objItem.id === props.objItem.id
+      (obj) => obj.itemId.id === props.objItem.id
     );
     return (
       <React.Fragment>
-        <p  >
+        <p>
           {isAdd
             ? "esta segur@ de agregar al carrito el producto:"
             : "esta segur@ de retirar del carrito el producto"}
         </p>
-        <p  className="global-font-size-h3 global-color-blue my-4">
+        <p className="global-font-size-h3 global-color-blue my-4">
           {props.objItem.title}
         </p>
 
         {objFinded && (
-          <p   className="text-muted global-font-size-9">
+          <p className="text-muted global-font-size-9">
             Productos del mismo tipo ingresados en el carrito:{" "}
             {objFinded.cantidad} <FontAwesomeIcon icon={faShoppingCart} />
           </p>
@@ -72,23 +78,84 @@ const CmpProductCard: React.FC<{
       FrmModalSiNo_ReduxAction_ShowModal(
         true,
         questionModalFormTextInformation(true),
-        () => {
-          dispatch(NotaDePedido_ReduxAction_Add(props.objItem));
+        async () => {
+          try {
+            dispatch(FrmModalLoading_ReduxAction_ShowModal(true));
+            const db = getFirestore();
+
+            let obj = {
+              email: state.email,
+              items: state.arrNotaDePedido.map((obj) => ({
+                itemId: obj.itemId.id,
+                cantidad: obj.cantidad,
+              })),
+            };
+
+            let objItem = obj.items.find(
+              (obj) => obj.itemId === props.objItem.id
+            );
+            if (objItem) {
+              objItem.cantidad++;
+            } else {
+              obj.items.push({ cantidad: 1, itemId: props.objItem.id });
+            }
+
+            await db.collection("orders").doc(state.userId).update(obj);
+
+            dispatch(NotaDePedido_ReduxAction_Add(props.objItem));
+          } catch (ex) {
+            console.log("error", ex);
+          } finally {
+            dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
+          }
         }
       )
     );
   };
   const bnQuitarOnClick = () => {
     let objFinded = state.arrNotaDePedido.find(
-      (obj) => obj.objItem.id === props.objItem.id
+      (obj) => obj.itemId.id === props.objItem.id
     );
     if (objFinded) {
       dispatch(
         FrmModalSiNo_ReduxAction_ShowModal(
           true,
           questionModalFormTextInformation(false),
-          () => {
-            dispatch(NotaDePedido_ReduxAction_Remove(props.objItem));
+          async () => {
+            try {
+              dispatch(FrmModalLoading_ReduxAction_ShowModal(true));
+              const db = getFirestore();
+
+              let obj = {
+                email: state.email,
+                items: state.arrNotaDePedido.map((obj) => ({
+                  itemId: obj.itemId.id,
+                  cantidad: obj.cantidad,
+                })),
+              };
+
+              let objItem = obj.items.find(
+                (obj) => obj.itemId === props.objItem.id
+              );
+
+              if (objItem && objItem.cantidad) {
+                if (objItem.cantidad > 1) {
+                  objItem.cantidad = objItem.cantidad - 1;
+                } else {
+                  obj.items = obj.items.filter(
+                    (obj) => obj.itemId != objItem?.itemId
+                  );
+                }
+
+                await db.collection("orders").doc(state.userId).update(obj);
+
+                dispatch(NotaDePedido_ReduxAction_Remove(props.objItem));
+              }
+            } catch (ex) {
+              console.log("error", ex);
+            } finally {
+              dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
+            }
           }
         )
       );
@@ -129,7 +196,7 @@ const CmpProductCard: React.FC<{
           >
             {
               state.arrNotaDePedido.filter(
-                (obj) => obj.objItem.id === props.objItem.id
+                (obj) => obj.itemId.id === props.objItem.id
               )[0]?.cantidad
             }
           </span>

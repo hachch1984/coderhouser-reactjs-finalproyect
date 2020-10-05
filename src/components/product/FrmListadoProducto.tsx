@@ -18,40 +18,14 @@ const FrmListadoProducto: React.FC = (props) => {
   
   useEffect(() => {
   
+
+
+
+
+
+    
   }, []);
-/*
-  const executeSearch = async (value: string) => {
-    try {
-      dispatch(FrmModalLoading_ReduxAction_ShowModal(true));
-
-      const db = getFirestore();
-
-      let result1 = await db.collection("items").get();
-      let arrItem: IItem[] = [];
-      result1.docs.forEach((doc) => {
-        let objItem = doc.data() as IItem;
-        objItem.id = doc.id;
-        arrItem.push(objItem);
-      });
-
-      let result2 = await db.collection("category").get();
-      let arrCategories: ICategory[] = [{ id: "ALL", name: "VER TODO" }];
-      result2.docs.forEach((doc) => {
-        let objCategory = doc.data() as ICategory;
-        objCategory.id = doc.id;
-        objCategory.name = objCategory.name.toUpperCase();
-        arrCategories.push(objCategory);
-      });
-
-      dispatch(Item_ReduxAction_Add(arrItem));
-      dispatch(Category_ReduxAction_Add(arrCategories));
-    } catch (ex) {
-      console.log("error", ex);
-    } finally {
-      dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
-    }
-  };
-*/
+ 
   return (
     <FrmHeaderBodyFooter>
       <div className=" container-fluid  ">
