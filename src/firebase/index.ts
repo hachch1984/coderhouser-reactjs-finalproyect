@@ -17,4 +17,3 @@ export const getFirebase = () => {
 export const getFirestore = () => {
   return firebase.firestore(app);
 };
- 

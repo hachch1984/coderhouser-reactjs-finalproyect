@@ -22,7 +22,7 @@ const Frm: React.FC<{ className?: string }> = (props) => {
                 dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
             }, 1000);
         }
-    });
+    }, []);
 
     return (
         <div

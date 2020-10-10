@@ -43,7 +43,7 @@ const FrmIndex = () => {
 
     useEffect(() => {
         load();
-    });
+    }, []);
 
     const load = async () => {
         const db = getFirestore();
