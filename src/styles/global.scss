@@ -111,13 +111,12 @@ $color-empresa-orange: #f8bb59;
   cursor: pointer;
 }
 
-.global-shadow {   
-   box-shadow: -2px 13px 30px 0px rgba(0, 0, 0, 0.39);
+.global-shadow {
+  box-shadow: -2px 13px 30px 0px rgba(0, 0, 0, 0.39);
 }
 
-.global-hover-bold{
-  
-  :hover{
-    font-weight: bolder;    
+.global-hover-bold {
+  :hover {
+    font-weight: bolder;
   }
 }

@@ -111,7 +111,8 @@ export const Redux_FrmModal_Reducer = (
         ...state,
         frmModalSiNo_show: obj.show,
         frmModalSiNo_message: obj.show === false ? undefined : obj.message,
-        frmModalSiNo_yesOnClick: obj.show === false ? undefined : obj.yesOnClick,
+        frmModalSiNo_yesOnClick:
+          obj.show === false ? undefined : obj.yesOnClick,
         frmModalSiNo_noOnClick: obj.show === false ? undefined : obj.noOnClick,
       };
     }

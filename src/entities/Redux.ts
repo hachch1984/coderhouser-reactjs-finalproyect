@@ -1,11 +1,7 @@
 import { Action } from "redux";
-import { INotaDePedido } from "./INotaDePedido";
-import { IItem } from "./IItem";
 import { ICategory } from "./ICategory";
- 
-import { RootState } from "../store/Stores";
-import { getFirestore } from "../firebase";
-import { FrmModalLoading_ReduxAction_ShowModal, IFrmModalLoading_Action_ShowModal } from "../components/modalForm/Redux";
+import { IItem } from "./IItem";
+import { INotaDePedido } from "./INotaDePedido";
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 const Type = "Entities_";
@@ -116,14 +112,6 @@ interface Redux_Entity_State {
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
- 
-
 export const Redux_Entity_Reducer = (
   state: Redux_Entity_State = {
     arrNotaDePedido: [],
@@ -141,12 +129,16 @@ export const Redux_Entity_Reducer = (
     | ICategory_Action_SetSelected
     | IItem_Action_Add
     | IOrder_Action_SetEmail
-    |IOrder_Action_SetUserId
-    |INotaDePedido_Action_AddArray
+    | IOrder_Action_SetUserId
+    | INotaDePedido_Action_AddArray
 ): Redux_Entity_State => {
   switch (action.type) {
-    case Type_NotaDePedido_AddArray:{
-      return {...state,arrNotaDePedido:(action as INotaDePedido_Action_AddArray).arrNotaDePedido}
+    case Type_NotaDePedido_AddArray: {
+      return {
+        ...state,
+        arrNotaDePedido: (action as INotaDePedido_Action_AddArray)
+          .arrNotaDePedido,
+      };
     }
     case Type_Order_SetUserId: {
       return { ...state, userId: (action as IOrder_Action_SetUserId).userId };
