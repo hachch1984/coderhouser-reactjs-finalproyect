@@ -38,7 +38,7 @@ const div1Css: CSSProperties = {
 
 const FrmIndex = () => {
     const dispatch = useDispatch();
-    const [email_value, email_setValue] = useState("email2@gmail.com");
+    const [email_value, email_setValue] = useState("");
     const TbEmail = useRef<HTMLInputElement>(null);
 
 
