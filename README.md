@@ -1,3 +1,8 @@
+Video explicativo de como funciona mi aplicacion:
+https://drive.google.com/file/d/1bwDFRwz3q766w379Rg_ubLKtQzciKRq9/view?usp=sharing
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
