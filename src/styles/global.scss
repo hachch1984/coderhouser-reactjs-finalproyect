@@ -49,6 +49,9 @@ $color-empresa-orange: #f8bb59;
 .global-background-color-yellow {
   background-color: $color-empresa-yellow;
 }
+.global-background-color-white {
+  background-color: white;
+}
 
 .global-font-size-6 {
   font-size: 0.6rem;
@@ -106,5 +109,35 @@ $color-empresa-orange: #f8bb59;
 .global-hover-bold {
   :hover {
     font-weight: bolder;
+  }
+}
+/**********************************************************************************************************************************************************/
+ 
+@media (min-width: 576px) {
+  .card-columns-items {
+    column-count: 1 ;
+  }
+}
+@media (min-width: 600px) {
+  .card-columns-items {
+    column-count: 1 ;
+  }
+}
+
+@media (min-width: 800px) {
+  .card-columns-items {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1200px) {
+  .card-columns-items {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1700px) {
+  .card-columns-items {
+    column-count: 4;
   }
 }

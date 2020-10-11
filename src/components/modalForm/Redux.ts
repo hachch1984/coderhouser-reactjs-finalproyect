@@ -47,14 +47,20 @@ interface IFrmModalMessage_Action_ShowModal
   extends Action<typeof Type_FrmModalMessage_ShowModal> {
   show: boolean;
   message?: JSX.Element;
+  title?: string;
+  showCloseButton?: boolean;
 }
 export const FrmModalMessage_ReduxAction_ShowModal = (
   show: boolean,
-  message?: JSX.Element
+  message?: JSX.Element,
+  title?: string,
+  showCloseButton?: boolean
 ): IFrmModalMessage_Action_ShowModal => ({
   type: Type_FrmModalMessage_ShowModal,
   show,
   message,
+  title,
+  showCloseButton,
 });
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -63,6 +69,8 @@ export interface Redux_FrmModal_State {
 
   frmModalMessage_show: boolean;
   frmModalMessage_message?: JSX.Element;
+  frmModalMessage_title?: string;
+  frmModalMessage_closeButton?: boolean;
 
   frmModalSiNo_show: boolean;
   frmModalSiNo_yesOnClick?: () => void;
@@ -78,6 +86,8 @@ export const Redux_FrmModal_Reducer = (
 
     frmModalMessage_show: false,
     frmModalMessage_message: undefined,
+    frmModalMessage_closeButton: undefined,
+    frmModalMessage_title: undefined,    
 
     frmModalSiNo_show: false,
     frmModalSiNo_yesOnClick: undefined,
@@ -92,10 +102,13 @@ export const Redux_FrmModal_Reducer = (
   switch (action.type) {
     case Type_FrmModalMessage_ShowModal: {
       let obj = action as IFrmModalMessage_Action_ShowModal;
+      console.log("obj", obj);
       return {
         ...state,
         frmModalMessage_show: obj.show,
-        frmModalMessage_message: obj.show === false ? undefined : obj.message,
+        frmModalMessage_message: obj.message,
+        frmModalMessage_closeButton: obj.showCloseButton,
+        frmModalMessage_title: obj.title,
       };
     }
     case Type_FrmModalLoading_ShowModal: {

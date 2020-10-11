@@ -1,23 +1,23 @@
 import {
     faInfoCircle,
     faList,
-    faShoppingCart,
+    faShoppingCart
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { IItem } from "../../entities/IItem";
 import {
     Category_ReduxAction_SetSelected,
-    Item_ReduxAction_Add,
+    Item_ReduxAction_Add
 } from "../../entities/Redux";
 import { getFirestore } from "../../firebase";
 import { Img_LogoCompleteHorizontal } from "../../images/ImageCollection";
 import { RootState } from "../../store/Stores";
 import { FrmModalLoading_ReduxAction_ShowModal } from "../modalForm/Redux";
-import { FrmListadoProducto_Url } from "../product/FrmListadoProducto";
-import { FrmPago_Url } from "../product/FrmPago";
+import { FrmItemList_Url } from "../item/FrmItemList";
+import { FrmPago_Url } from "../item/FrmPago";
 import { FrmIndex_Url } from "./FrmIndex";
 
 const CmpHeader: React.FC<{
@@ -29,7 +29,41 @@ const CmpHeader: React.FC<{
     const dispatch = useDispatch();
     const className1 = " d-flex align-items-center   ";
 
-    useEffect(() => {}, []);
+    const cbSelectOnChange = async (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        try {
+            dispatch(FrmModalLoading_ReduxAction_ShowModal(true));
+            dispatch(Item_ReduxAction_Add([]));
+            dispatch(Category_ReduxAction_SetSelected(event.target.value));
+            const db = getFirestore();
+
+            let arrItem: IItem[] = [];
+
+            let response: firebase.firestore.QuerySnapshot;
+
+            if (event.target.value === "ALL") {
+                response = await db.collection("items").get();
+            } else {
+                response = await db
+                    .collection("items")
+                    .where("categoryId", "==", event.target.value)
+                    .get();
+            }
+
+            response.docs.forEach((doc) => {
+                let objItem = doc.data() as IItem;
+                objItem.id = doc.id;
+                arrItem.push(objItem);
+            });
+
+            dispatch(Item_ReduxAction_Add(arrItem));
+        } catch (ex) {
+            console.log("error", ex);
+        } finally {
+            dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
+        }
+    };
 
     return (
         <div className="global-background-color-yellow  ">
@@ -69,66 +103,8 @@ const CmpHeader: React.FC<{
                                     />
                                     <select
                                         value={state.selectedCategoryId}
-                                        onChange={async (event) => {
-                                            try {
-                                                dispatch(
-                                                    FrmModalLoading_ReduxAction_ShowModal(
-                                                        true
-                                                    )
-                                                );
-                                                dispatch(
-                                                    Item_ReduxAction_Add([])
-                                                );
-                                                dispatch(
-                                                    Category_ReduxAction_SetSelected(
-                                                        event.target.value
-                                                    )
-                                                );
-                                                const db = getFirestore();
-
-                                                let arrItem: IItem[] = [];
-
-                                                let response: firebase.firestore.QuerySnapshot;
-
-                                                if (
-                                                    event.target.value === "ALL"
-                                                ) {
-                                                    response = await db
-                                                        .collection("items")
-                                                        .get();
-                                                } else {
-                                                    response = await db
-                                                        .collection("items")
-                                                        .where(
-                                                            "categoryId",
-                                                            "==",
-                                                            event.target.value
-                                                        )
-                                                        .get();
-                                                }
-
-                                                response.docs.forEach((doc) => {
-                                                    let objItem = doc.data() as IItem;
-                                                    objItem.id = doc.id;
-                                                    arrItem.push(objItem);
-                                                });
-
-                                                dispatch(
-                                                    Item_ReduxAction_Add(
-                                                        arrItem
-                                                    )
-                                                );
-                                            } catch (ex) {
-                                                console.log("error", ex);
-                                            } finally {
-                                                dispatch(
-                                                    FrmModalLoading_ReduxAction_ShowModal(
-                                                        false
-                                                    )
-                                                );
-                                            }
-                                        }}
-                                        className="ml-2 w-100"
+                                        onChange={cbSelectOnChange}
+                                        className="ml-2 w-100 global-background-color-white"
                                         style={{
                                             border: "solid 1px transparent",
                                         }}
@@ -163,9 +139,9 @@ const CmpHeader: React.FC<{
                         )}
                         {props.showContinueShopping && (
                             <Link
-                                to={FrmListadoProducto_Url}
+                                to={FrmItemList_Url}
                                 className={
-                                    className1 + "global-cursor-pointer "
+                                    className1 + "global-cursor-pointer ml-2"
                                 }
                             >
                                 <FontAwesomeIcon
@@ -173,7 +149,10 @@ const CmpHeader: React.FC<{
                                     icon={faList}
                                 />
 
-                                <p className=" pl-1  my-3 my-lg-0  global-color-blue">
+                                <p
+                                    className=" pl-1  my-3 my-lg-0  global-color-blue text-center "
+                                    style={{ width: "150px" }}
+                                >
                                     Seguir Comprando
                                 </p>
                             </Link>

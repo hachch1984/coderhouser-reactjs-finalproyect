@@ -9,6 +9,10 @@ import logoCompleteHorizontal from "./logoPrincipalCompleteHorizontal.png";
 import logoReact from "./logoReact.png";
 import logoText from "./logoText.png";
 import noImage1 from "./noImage1.png";
+import celuar from "./celular.jpg";
+
+
+export const Img_Celular=celuar;
 
 export const Gif_Loading1 = gif_loading1;
 export const Gif_Logo = logo;

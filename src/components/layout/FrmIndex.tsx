@@ -13,15 +13,15 @@ import {
     Item_ReduxAction_Add,
     NotaDePedido_ReduxAction_AddArray,
     Order_ReduxAction_SetEmail,
-    Order_ReduxAction_SetUserId,
+    Order_ReduxAction_SetUserId
 } from "../../entities/Redux";
 import { getFirestore } from "../../firebase";
 import { Img_LogoComplete } from "../../images/ImageCollection";
+import { FrmItemList_Url } from "../item/FrmItemList";
 import {
     FrmModalLoading_ReduxAction_ShowModal,
-    FrmModalMessage_ReduxAction_ShowModal,
+    FrmModalMessage_ReduxAction_ShowModal
 } from "../modalForm/Redux";
-import { FrmListadoProducto_Url } from "../product/FrmListadoProducto";
 import Frm from "./Frm";
 
 const div1Css: CSSProperties = {
@@ -38,12 +38,10 @@ const div1Css: CSSProperties = {
 
 const FrmIndex = () => {
     const dispatch = useDispatch();
-    const [email_value, email_setValue] = useState("");
+    const [email_value, email_setValue] = useState("email2@gmail.com");
     const TbEmail = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-        load();
-    }, []);
+
 
     const load = async () => {
         const db = getFirestore();
@@ -70,7 +68,100 @@ const FrmIndex = () => {
         dispatch(Category_ReduxAction_Add(arrCategories));
     };
 
+    useEffect(() => {
+        load();
+      
+    },[] );
+
     const histoty = useHistory();
+
+    const bnIngresarClick = async () => {
+        if (TbEmail.current?.checkValidity() === false) {
+            dispatch(
+                FrmModalMessage_ReduxAction_ShowModal(
+                    true,
+                    <p className="global-font-size-h3">
+                        {email_value === ""
+                            ? "Olvido ingresar su email"
+                            : "El texto digitado no tiene formato de email"}
+                    </p>
+                )
+            );
+        } else {
+            try {
+                dispatch(FrmModalLoading_ReduxAction_ShowModal(true));
+                dispatch(Order_ReduxAction_SetEmail(email_value.toLowerCase()));
+
+                const db = getFirestore();
+
+                let request = await db
+                    .collection("orders")
+                    .where("email", "==", email_value.toLowerCase())
+                    .get();
+
+                let obj = {
+                    email: email_value.toLowerCase(),
+                    items: [],
+                };
+
+                let userId = "";
+                let items: any[] = [];
+
+                if (request.docs.length === 0) {
+                    let request2 = await db.collection("orders").add(obj);
+                    userId = request2.id;
+                } else {
+                    userId = request.docs[0].id;
+
+                    items = request.docs[0].data().items as [];
+                }
+
+                if (items.length !== 0) {
+                    let arrItem: IItem[] = [];
+
+                    for (let i = 0; i < items.length; i++) {
+                        let request3 = await db
+                            .collection("items")
+                            .where(
+                                firestore.FieldPath.documentId(),
+                                "==",
+                                items[i].itemId
+                            )
+                            .get();
+                        if (request3.docs.length === 1) {
+                            let objItem = request3.docs[0].data() as IItem;
+                            objItem.id = request3.docs[0].id;
+                            arrItem.push(objItem);
+                        }
+                    }
+
+                    let arrNotaDePedido: INotaDePedido[] = [];
+                    arrItem.forEach((obj) => {
+                        let cantidad = items.find(
+                            (objItem) => objItem.itemId === obj.id
+                        ).cantidad as number;
+                        if (cantidad) {
+                            arrNotaDePedido.push({
+                                cantidad,
+                                itemId: obj,
+                            });
+                        }
+                    });
+
+                    dispatch(
+                        NotaDePedido_ReduxAction_AddArray(arrNotaDePedido)
+                    );
+                }
+
+                dispatch(Order_ReduxAction_SetUserId(userId));
+
+                histoty.push(FrmItemList_Url);
+            } catch (ex) {
+                console.log("error", ex);
+                dispatch(FrmModalLoading_ReduxAction_ShowModal(false));
+            }
+        }
+    };
 
     return (
         <Frm className="global-background-color-orange">
@@ -87,113 +178,17 @@ const FrmIndex = () => {
                     onChange={(event) => {
                         email_setValue(event.currentTarget.value);
                     }}
+                    onKeyPress={(event) => {
+                        if (event.key.charCodeAt(0) === 69) {
+                            bnIngresarClick();
+                        }
+                    }}
                 />
 
                 <div
-                    onClick={async (event) => {
-                        if (TbEmail.current?.checkValidity() === false) {
-                            dispatch(
-                                FrmModalMessage_ReduxAction_ShowModal(
-                                    true,
-                                    <p className="global-font-size-h3">
-                                        {email_value === ""
-                                            ? "Olvido ingresar su email"
-                                            : "El texto digitado no tiene formato de email"}
-                                    </p>
-                                )
-                            );
-                        } else {
-                            try {
-                                dispatch(
-                                    FrmModalLoading_ReduxAction_ShowModal(true)
-                                );
-                                dispatch(
-                                    Order_ReduxAction_SetEmail(
-                                        email_value.toLowerCase()
-                                    )
-                                );
-
-                                const db = getFirestore();
-
-                                let request = await db
-                                    .collection("orders")
-                                    .where(
-                                        "email",
-                                        "==",
-                                        email_value.toLowerCase()
-                                    )
-                                    .get();
-
-                                let obj = {
-                                    email: email_value.toLowerCase(),
-                                    items: [],
-                                };
-
-                                let userId = "";
-                                let items: any[] = [];
-
-                                if (request.docs.length === 0) {
-                                    let request2 = await db
-                                        .collection("orders")
-                                        .add(obj);
-                                    userId = request2.id;
-                                } else {
-                                    userId = request.docs[0].id;
-
-                                    items = request.docs[0].data().items as [];
-                                }
-
-                                if (items.length !== 0) {
-                                    let arrItem: IItem[] = [];
-
-                                    for (let i = 0; i < items.length; i++) {
-                                        let request3 = await db
-                                            .collection("items")
-                                            .where(
-                                                firestore.FieldPath.documentId(),
-                                                "==",
-                                                items[i].itemId
-                                            )
-                                            .get();
-                                        if (request3.docs.length === 1) {
-                                            let objItem = request3.docs[0].data() as IItem;
-                                            objItem.id = request3.docs[0].id;
-                                            arrItem.push(objItem);
-                                        }
-                                    }
-
-                                    let arrNotaDePedido: INotaDePedido[] = [];
-                                    arrItem.forEach((obj) => {
-                                        let cantidad = items.find(
-                                            (objItem) => objItem.id === obj.id
-                                        ).cantidad as number;
-                                        if (cantidad) {
-                                            arrNotaDePedido.push({
-                                                cantidad,
-                                                itemId: obj,
-                                            });
-                                        }
-                                    });
-
-                                    dispatch(
-                                        NotaDePedido_ReduxAction_AddArray(
-                                            arrNotaDePedido
-                                        )
-                                    );
-                                }
-
-                                dispatch(Order_ReduxAction_SetUserId(userId));
-
-                                histoty.push(FrmListadoProducto_Url);
-                            } catch (ex) {
-                                console.log("error", ex);
-                                dispatch(
-                                    FrmModalLoading_ReduxAction_ShowModal(false)
-                                );
-                            }
-                        }
+                    onClick={(event) => {
+                        bnIngresarClick();
                     }}
-                    // to={FrmListadoProducto_Url}
                     className="mt-5 global-color-blue global-cursor-pointer global-font-size-h4"
                 >
                     <FontAwesomeIcon icon={faSignInAlt} /> Ingresar

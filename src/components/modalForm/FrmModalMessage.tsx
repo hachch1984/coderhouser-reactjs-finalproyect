@@ -18,14 +18,27 @@ const FrmModalMessage: React.FC = () => {
                 style={{
                     width: "50%",
                     position: "fixed",
-                    top: "30%",
+                    top: "20%",
                     left: "25%",
                 }}
             >
-                <div className="card-header global-background-color-yellow">
+                <div className="card-header global-background-color-yellow d-flex justify-content-between">
                     <p className="card-title global-font-size-h6 global-color-blue">
-                        Un Momento Por Favor !
+                        {state.frmModalMessage_title
+                            ? state.frmModalMessage_title
+                            : "Un Momento Por Favor !"}
                     </p>
+                    {state.frmModalMessage_closeButton && (
+                        <p
+                            onClick={(event) => {
+                                dispatch(
+                                    FrmModalMessage_ReduxAction_ShowModal(false)
+                                );
+                            }}
+                        >
+                            close
+                        </p>
+                    )}
                 </div>
 
                 <div className="card-body py-5">
@@ -33,19 +46,23 @@ const FrmModalMessage: React.FC = () => {
                         {state.frmModalMessage_message}
                     </div>
                 </div>
-                <div className="card-footer d-flex justify-content-center global-background-color-yellow">
-                    <button
-                        className="btn btn-primary"
-                        onClick={() => {
-                            dispatch(
-                                FrmModalMessage_ReduxAction_ShowModal(false)
-                            );
-                        }}
-                    >
-                        <FontAwesomeIcon className="mr-1" icon={faCheck} />
-                        ACEPTAR
-                    </button>
-                </div>
+                {state.frmModalMessage_closeButton ? (
+                    ""
+                ) : (
+                    <div className="card-footer d-flex justify-content-center global-background-color-yellow">
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => {
+                                dispatch(
+                                    FrmModalMessage_ReduxAction_ShowModal(false)
+                                );
+                            }}
+                        >
+                            <FontAwesomeIcon className="mr-1" icon={faCheck} />
+                            ACEPTAR
+                        </button>
+                    </div>
+                )}
             </div>
         </FrmModal>
     );

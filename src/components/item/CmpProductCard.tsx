@@ -1,4 +1,5 @@
 import {
+    faInfoCircle,
     faMinusSquare,
     faPlusSquare,
     faShoppingCart,
@@ -6,44 +7,46 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { IItem } from "../../entities/IItem";
 import {
     NotaDePedido_ReduxAction_Add,
     NotaDePedido_ReduxAction_Remove,
 } from "../../entities/Redux";
 import { getFirestore } from "../../firebase";
-import { Img_NoImage } from "../../images/ImageCollection";
+import { Gif_Loading1 } from "../../images/ImageCollection";
 import { RootState } from "../../store/Stores";
-import CompLoading from "../modalForm/CompLoading";
 import {
     FrmModalLoading_ReduxAction_ShowModal,
     FrmModalSiNo_ReduxAction_ShowModal,
 } from "../modalForm/Redux";
+import { FrmItemDetail_Param, FrmItemDetail_Url } from "./FrmItemDetail";
 
 const CmpProductCard: React.FC<{
     objItem: IItem;
     showAddButton?: boolean;
     showRemoveButton?: boolean;
     showTotalSelectedItems?: boolean;
-    defaultOrientation: "vertical" | "horizontal" | "mixed";
-    alwaysCol12?: boolean;
+    showInfo?: boolean;
+    defaultOrientation: "vertical" | "horizontal" | "mixed" | "Detail";
 }> = (props) => {
     const state = useSelector((obj: RootState) => obj.Entity);
     const dispatch = useDispatch();
     const [image_value, image_setValue] = useState("");
-    const getImg = async () => {
-        let request = await fetch(props.objItem.img);
-        let response = await request.blob();
-        image_setValue(URL.createObjectURL(response));
-    };
 
     const objDiv1 = useRef<HTMLDivElement>(null);
     const objDiv2 = useRef<HTMLDivElement>(null);
     const objP = useRef<HTMLParagraphElement>(null);
 
     useEffect(() => {
+        const getImg = async () => {
+            let request = await fetch(props.objItem.img);
+            let response = await request.blob();
+            image_setValue(URL.createObjectURL(response));
+        };
+
         getImg();
-    });
+    }, []);
 
     const questionModalFormTextInformation = (isAdd: boolean) => {
         let objFinded = state.arrNotaDePedido.find(
@@ -62,8 +65,8 @@ const CmpProductCard: React.FC<{
 
                 {objFinded && (
                     <p className="text-muted global-font-size-9">
-                        Productos del mismo tipo ingresados en el carrito:{" "}
-                        {objFinded.cantidad}{" "}
+                        Productos del mismo tipo ingresados en el carrito:
+                        {objFinded.cantidad}
                         <FontAwesomeIcon icon={faShoppingCart} />
                     </p>
                 )}
@@ -178,44 +181,75 @@ const CmpProductCard: React.FC<{
     };
 
     const eventMouseEnter = () => {
-        objDiv1.current?.classList.add("global-shadow");
-        objDiv2.current?.classList.add("font-weight-bolder");
-        objP.current?.classList.add("pt-1");
+        if (props.defaultOrientation !== "Detail") {
+            objDiv1.current?.classList.add("global-shadow");
+            objDiv2.current?.classList.add("font-weight-bolder");
+            objP.current?.classList.add("pt-1");
+        }
     };
     const eventMouseLeave = () => {
-        objDiv1.current?.classList.remove("global-shadow");
-        objDiv2.current?.classList.remove("font-weight-bolder");
-        objP.current?.classList.remove("pt-1");
+        if (props.defaultOrientation !== "Detail") {
+            objDiv1.current?.classList.remove("global-shadow");
+            objDiv2.current?.classList.remove("font-weight-bolder");
+            objP.current?.classList.remove("pt-1");
+        }
+    };
+    const renderButtonInfoAndTotalSelectedItems = () => {
+        let info = props.showInfo && (
+            <Link
+                to={{
+                    pathname: FrmItemDetail_Url,
+                    state: {
+                        objItem: props.objItem,
+                    } as FrmItemDetail_Param,
+                }}
+            >
+                <FontAwesomeIcon icon={faInfoCircle} />
+
+                <span className=" ml-1 font-weight-bolder global-font-size-8 d-none d-md-inline">
+                    Detalles
+                </span>
+            </Link>
+        );
+        let total = props.showTotalSelectedItems && (
+            <div>
+                <span className="global-color-blue global-font-size-8 font-weight-bold mr-1">
+                    {
+                        state.arrNotaDePedido.filter(
+                            (obj) => obj.itemId.id === props.objItem.id
+                        )[0]?.cantidad
+                    }
+                </span>
+                <FontAwesomeIcon
+                    icon={faShoppingCart}
+                    className="d-none d-md-inline"
+                />
+            </div>
+        );
+
+        if (props.showInfo || props.showTotalSelectedItems) {
+            return (
+                <div
+                    className=" d-flex justify-content-between global-color-blue align-items-center   global-cursor-pointer w-100 p-2"
+                    style={{ position: "absolute", bottom: "0", left: "0" }}
+                >
+                    {info}
+                    {total}
+                </div>
+            );
+        }
     };
 
-    const buttonsAddAndRemove = () => {
+    const renderButtonsAddAndRemove = () => {
         let buttonAdd = props.showAddButton && (
             <div
                 onClick={() => bnAgregarOnClick()}
                 className="global-color-blue global-cursor-pointer d-flex align-items-center   global-hover-bold"
             >
                 <FontAwesomeIcon icon={faPlusSquare} />
-                <span className="global-font-size-8 ml-1 font-weight-bolder">
+                <span className=" ml-1 font-weight-bolder d-none d-md-inline global-font-size-8 ">
                     Agregar
                 </span>
-            </div>
-        );
-
-        let totalSelectedItems = props.showTotalSelectedItems && (
-            <div>
-                <div className="global-color-blue d-flex align-items-center   global-hover-bold">
-                    <FontAwesomeIcon icon={faShoppingCart} />
-                    <span
-                        className="global-background-color-blue text-white global-font-size-7 p-1 ml-1"
-                        style={{ borderRadius: "50%" }}
-                    >
-                        {
-                            state.arrNotaDePedido.filter(
-                                (obj) => obj.itemId.id === props.objItem.id
-                            )[0]?.cantidad
-                        }
-                    </span>
-                </div>
             </div>
         );
 
@@ -224,7 +258,7 @@ const CmpProductCard: React.FC<{
                 onClick={() => bnQuitarOnClick()}
                 className="global-color-blue global-cursor-pointer d-flex align-items-center   global-hover-bold"
             >
-                <span className="global-font-size-8 mr-1 font-weight-bolder">
+                <span className="  mr-1 font-weight-bolder d-none d-md-inline global-font-size-8 ">
                     Quitar
                 </span>
                 <FontAwesomeIcon icon={faMinusSquare} />
@@ -233,9 +267,11 @@ const CmpProductCard: React.FC<{
 
         if (props.showAddButton || props.showRemoveButton) {
             return (
-                <div className="d-flex justify-content-between mt-2">
+                <div
+                    className="  d-flex justify-content-between mt-1 w-100 p-2"
+                    style={{ position: "absolute", top: "0", left: "0" }}
+                >
                     {buttonAdd}
-                    {totalSelectedItems}
                     {buttonRemove}
                 </div>
             );
@@ -246,14 +282,31 @@ const CmpProductCard: React.FC<{
         let str = "";
 
         switch (props.defaultOrientation) {
+            case "Detail":
+                str = " col-12 ";
+                break;
             case "horizontal":
                 str = " col-6 ";
                 break;
             case "mixed":
-                str = " col-6 col-sm-12 ";
+                str = " col-6 col-md-12 ";
                 break;
             case "vertical":
-                str = " col-sm-12 ";
+                str = " col-md-12 ";
+                break;
+        }
+        return str;
+    };
+
+    const maxHeight = () => {
+        let str = "";
+
+        switch (props.defaultOrientation) {
+            case "Detail":
+                str = "600px";
+                break;
+            default:
+                str = "200px";
                 break;
         }
         return str;
@@ -261,65 +314,81 @@ const CmpProductCard: React.FC<{
 
     return (
         <div
-            className={
-                props.alwaysCol12
-                    ? "col-12 m-1"
-                    : "col-12 col-sm-5 col-md-4 col-lg-3 col-xl-2 m-1"
-            }
+            ref={objDiv1}
+            className="card m-2"
+            onMouseEnter={eventMouseEnter}
+            onMouseLeave={eventMouseLeave}
+            style={{
+                maxHeight:
+                    props.defaultOrientation === "Detail" ? "none" : "400px",
+                width: props.defaultOrientation === "Detail" ? "none" : "400px",
+            }}
         >
-            <div
-                ref={objDiv1}
-                className="card   "
-                style={{ maxHeight: "400px" }}
-                onMouseEnter={eventMouseEnter}
-                onMouseLeave={eventMouseLeave}
-            >
-                <div className="container-fluid p-0">
-                    <div className="row no-gutters">
-                        <div className={horientation()}>
-                            <img
-                                className="card-img-top"
-                                style={{
-                                    maxHeight: "200px",
-                                    height:
-                                        props.defaultOrientation ===
-                                        "horizontal"
-                                            ? "100%"
-                                            : undefined,
-                                }}
-                                src={
-                                    image_value === ""
-                                        ? Img_NoImage
-                                        : image_value
+            <div className="container-fluid p-0 ">
+                <div className="row no-gutters">
+                    <div
+                        className={
+                            horientation() +
+                            " d-flex justify-content-center p-4"
+                        }
+                        style={{ maxHeight: maxHeight() }}
+                    >
+                        <img
+                            className=" img-fluid "
+                            style={{ maxHeight: maxHeight() }}
+                            src={
+                                image_value === "" ? Gif_Loading1 : image_value
+                            }
+                            alt={props.objItem.title}
+                        />
+                        {renderButtonsAddAndRemove()}
+                        {renderButtonInfoAndTotalSelectedItems()}
+                    </div>
+                    <div
+                        className={
+                            horientation() +
+                            " p-3 d-flex flex-column justify-content-around " +
+                            (props.defaultOrientation === "Detail"
+                                ? " text-center "
+                                : "")
+                        }
+                        style={{ maxHeight: maxHeight() }}
+                    >
+                        <div ref={objDiv2}>
+                            <p
+                                className={
+                                    props.defaultOrientation === "Detail"
+                                        ? "global-font-size-h6"
+                                        : ""
                                 }
-                                alt={props.objItem.title}
-                            />
+                            >
+                                {props.objItem.title}{" "}
+                            </p>
+                            <p
+                                className={
+                                    " my-2 " +
+                                    (props.defaultOrientation === "Detail"
+                                        ? " global-font-size-h6 "
+                                        : "global-font-size-9")
+                                }
+                            >
+                                ${props.objItem.price}
+                            </p>
                         </div>
-                        <div
+                        <p
+                            ref={objP}
                             className={
-                                horientation() +
-                                " p-3 d-flex flex-column justify-content-around "
+                                "text-muted " +
+                                (props.defaultOrientation === "Detail"
+                                    ? "card-text global-font-size-9"
+                                    : "card-text global-font-size-7")
                             }
                         >
-                            <div ref={objDiv2}>
-                                <p className=" ">{props.objItem.title} </p>
-                                <p className="global-font-size-9 my-2">
-                                    '$'{props.objItem.price}{" "}
-                                </p>
-                            </div>
-                            <p
-                                ref={objP}
-                                className="card-text global-font-size-7 text-muted"
-                            >
-                                {props.objItem.description}
-                            </p>
-
-                            {buttonsAddAndRemove()}
-                        </div>
+                            {props.objItem.description}
+                        </p>
                     </div>
                 </div>
             </div>
-            {image_value === "" && <CompLoading />}
         </div>
     );
 };

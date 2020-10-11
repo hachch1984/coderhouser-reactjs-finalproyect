@@ -1,7 +1,6 @@
 import React from "react";
 
-import "bootstrap/dist/css/bootstrap.css";
-import "../src/styles/reset.scss";
+import "bootstrap/dist/css/bootstrap.css"; 
 import "../src/styles/global.scss";
 import CmpFooter from "./components/layout/CmpFooter";
 import CmpHeader from "./components/layout/CmpHeader";
