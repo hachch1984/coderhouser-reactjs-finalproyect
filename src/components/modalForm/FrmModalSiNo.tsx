@@ -20,10 +20,10 @@ const FrmModalSiNo: React.FC = () => {
             <div
                 className="card"
                 style={{
-                    width: "50%",
+                    width: "70%",
                     position: "fixed",
-                    top: "30%",
-                    left: "25%",
+                    top: "5%",
+                    left: "15%",
                 }}
             >
                 <div className="card-header global-background-color-yellow">
