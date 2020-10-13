@@ -41,8 +41,6 @@ const FrmIndex = () => {
     const [email_value, email_setValue] = useState("");
     const TbEmail = useRef<HTMLInputElement>(null);
 
-
-
     const load = async () => {
         const db = getFirestore();
 
@@ -70,8 +68,12 @@ const FrmIndex = () => {
 
     useEffect(() => {
         load();
-      
-    },[] );
+
+        document.body.classList.add("global-background-color-orange");
+        return () => {
+            document.body.classList.remove("global-background-color-orange");
+        };
+    }, []);
 
     const histoty = useHistory();
 
